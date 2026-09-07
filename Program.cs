@@ -9,20 +9,18 @@ using Nutrition_backend.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Port will be set by Railway environment variables
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo 
-    { 
-        Title = "Nutrition Management API", 
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Nutrition Management API",
         Version = "v1",
         Description = "API for managing Vitamin A Supplementation Reports"
     });
-    
+
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
@@ -93,16 +91,16 @@ builder.Services.AddScoped<IVegetableSeedService, VegetableSeedService>();
 builder.Services.AddScoped<IAnimalDispersalService, AnimalDispersalService>();
 
 builder.Services.AddCors(options =>
-    {
-        options.AddPolicy("AllowAll",
-            policy =>
-            {
-                policy.SetIsOriginAllowed(origin => true)
-                      .AllowAnyMethod()
-                      .AllowAnyHeader()
-                      .AllowCredentials();
-            });
-    });
+{
+    options.AddPolicy("AllowAll",
+        policy =>
+        {
+            policy.SetIsOriginAllowed(origin => true)
+                  .AllowAnyMethod()
+                  .AllowAnyHeader()
+                  .AllowCredentials();
+        });
+});
 
 var app = builder.Build();
 
@@ -115,14 +113,9 @@ if (app.Environment.IsDevelopment())
         c.RoutePrefix = string.Empty;
     });
 }
-else
-{
-    app.UseHttpsRedirection();
-}
 
 app.UseCors("AllowAll");
 
-// Use your custom rate limit middleware
 app.UseMiddleware<RateLimitMiddleware>();
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
