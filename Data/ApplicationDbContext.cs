@@ -42,7 +42,7 @@ namespace Nutrition_backend.Data
             modelBuilder.Entity<Barangay>()
                 .Ignore(b => b.Reports);
 
-            // UPDATED: Removed unique index from AnimalRaisingReport
+          
             modelBuilder.Entity<AnimalRaisingReport>(entity =>
             {
                 entity.HasKey(e => e.Id);
