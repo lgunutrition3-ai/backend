@@ -1,0 +1,21 @@
+# Build results
+bin/
+obj/
+[Bb]in/
+[Oo]bj/
+
+# .NET user secrets
+secrets.json
+
+# Local appsettings with secrets - DO NOT COMMIT
+appsettings.Development.json
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# IDE
+.idea/
+.vscode/
+*.swp
