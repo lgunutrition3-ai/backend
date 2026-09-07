@@ -93,16 +93,16 @@ builder.Services.AddScoped<IVegetableSeedService, VegetableSeedService>();
 builder.Services.AddScoped<IAnimalDispersalService, AnimalDispersalService>();
 
 builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll",
-        policy =>
-        {
-            policy.SetIsOriginAllowed(origin => true)
-                  .AllowAnyMethod()
-                  .AllowAnyHeader()
-                  .AllowCredentials();
-        });
-});
+    {
+        options.AddPolicy("AllowAll",
+            policy =>
+            {
+                policy.SetIsOriginAllowed(origin => true)
+                      .AllowAnyMethod()
+                      .AllowAnyHeader()
+                      .AllowCredentials();
+            });
+    });
 
 var app = builder.Build();
 
