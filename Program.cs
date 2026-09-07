@@ -9,7 +9,7 @@ using Nutrition_backend.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.WebHost.UseUrls("http://0.0.0.0:5210", "http://localhost:5210");
+// Port will be set by Railway environment variables
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
