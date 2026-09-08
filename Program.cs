@@ -47,8 +47,24 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
-    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found. Set it as Railway variable: ConnectionStrings__DefaultConnection");
+    ?? Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection");
+
+if (string.IsNullOrEmpty(connectionString))
+{
+    var envVars = Environment.GetEnvironmentVariables();
+    var connVars = new System.Collections.Generic.List<string>();
+    foreach (System.Collections.DictionaryEntry entry in envVars)
+    {
+        var key = entry.Key?.ToString() ?? "";
+        if (key.Contains("onnection", StringComparison.OrdinalIgnoreCase) || key.Contains("YSQL", StringComparison.OrdinalIgnoreCase))
+        {
+            connVars.Add(key);
+        }
+    }
+    throw new InvalidOperationException(
+        $"Connection string not found. Matching env var names: [{string.Join(", ", connVars)}]. " +
+        $"Total env vars: {envVars.Count}. Set RAILWAY variable: ConnectionStrings__DefaultConnection");
+}
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
