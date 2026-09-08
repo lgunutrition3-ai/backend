@@ -1,9 +1,8 @@
 using System.ComponentModel.DataAnnotations;
-using Nutrition_backend.Helpers;
 
 namespace Nutrition_backend.DTOs
 {
-    public class CreateAdminDto
+    public class UpdateStaffDto
     {
         [Required]
         [MaxLength(50)]
@@ -15,7 +14,9 @@ namespace Nutrition_backend.DTOs
         public string Email { get; set; } = string.Empty;
 
         [Required]
-        [StrongPassword]
-        public string Password { get; set; } = string.Empty;
+        public string Barangay { get; set; } = string.Empty;
+
+        [MinLength(8, ErrorMessage = "Password must be at least 8 characters long")]
+        public string? NewPassword { get; set; }
     }
 }

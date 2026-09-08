@@ -33,7 +33,7 @@ namespace Nutrition_backend.Middleware
             
             var response = new
             {
-                message = exception.Message,
+                message = "An error occurred processing your request",
                 statusCode = (int)HttpStatusCode.InternalServerError
             };
 
@@ -46,7 +46,7 @@ namespace Nutrition_backend.Middleware
                     
                 case KeyNotFoundException:
                     context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                    response = new { message = exception.Message, statusCode = 404 };
+                    response = new { message = "Resource not found", statusCode = 404 };
                     break;
                     
                 case InvalidOperationException:
@@ -54,6 +54,11 @@ namespace Nutrition_backend.Middleware
                     response = new { message = exception.Message, statusCode = 400 };
                     break;
                     
+                case ArgumentException:
+                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    response = new { message = exception.Message, statusCode = 400 };
+                    break;
+
                 default:
                     context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                     response = new { message = "An error occurred processing your request", statusCode = 500 };

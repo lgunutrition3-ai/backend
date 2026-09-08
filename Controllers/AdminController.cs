@@ -106,6 +106,51 @@ namespace Nutrition_backend.Controllers
             });
         }
 
+        [HttpPut("staff/{id}")]
+        public async Task<IActionResult> UpdateStaff(int id, [FromBody] UpdateStaffDto dto)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null || user.Role != "staff")
+            {
+                return NotFound(new { message = "Staff not found" });
+            }
+
+            if (await _context.Users.AnyAsync(u => u.Username == dto.Username && u.Id != id))
+            {
+                return BadRequest(new { message = "Username already exists" });
+            }
+
+            if (await _context.Users.AnyAsync(u => u.Email == dto.Email && u.Id != id))
+            {
+                return BadRequest(new { message = "Email already exists" });
+            }
+
+            if (!BarangayData.AllBarangays.Contains(dto.Barangay))
+            {
+                return BadRequest(new { message = "Invalid barangay" });
+            }
+
+            user.Username = dto.Username;
+            user.Email = dto.Email;
+            user.Barangay = dto.Barangay;
+
+            if (!string.IsNullOrEmpty(dto.NewPassword))
+            {
+                user.PasswordHash = _passwordService.HashPassword(dto.NewPassword);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                user.Id,
+                user.Username,
+                user.Email,
+                user.Barangay,
+                user.IsActive
+            });
+        }
+
         [HttpDelete("staff/{id}")]
         public async Task<IActionResult> DeleteStaff(int id)
         {

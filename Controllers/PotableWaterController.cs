@@ -120,6 +120,12 @@ namespace Nutrition_backend.Controllers
         {
             try
             {
+                if (ids == null || ids.Count == 0)
+                    return BadRequest(new { message = "No IDs provided" });
+
+                if (ids.Count > 100)
+                    return BadRequest(new { message = "Cannot delete more than 100 records at once" });
+
                 var result = await _service.DeletePotableWaterManyAsync(ids);
                 if (!result)
                     return NotFound(new { message = "No records found" });
@@ -127,7 +133,7 @@ namespace Nutrition_backend.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(new { message = "An error occurred deleting records" });
             }
         }
     }

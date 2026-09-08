@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Nutrition_backend.Helpers;
 
 namespace Nutrition_backend.DTOs
 {
@@ -14,7 +15,7 @@ namespace Nutrition_backend.DTOs
         public string Email { get; set; } = string.Empty;
 
         [Required]
-        [MinLength(6)]
+        [StrongPassword]
         public string Password { get; set; } = string.Empty;
 
         [Required]

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Nutrition_backend.Helpers;
 
 namespace Nutrition_backend.DTOs
 {
@@ -8,7 +9,7 @@ namespace Nutrition_backend.DTOs
         public string CurrentPassword { get; set; } = string.Empty;
 
         [Required]
-        [MinLength(6)]
+        [StrongPassword]
         public string NewPassword { get; set; } = string.Empty;
     }
 }

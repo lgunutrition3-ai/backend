@@ -29,21 +29,14 @@ namespace Nutrition_backend.Controllers
 
             if (userIdClaim == null)
             {
-                // Log all claims for debugging
-                Console.WriteLine("=== ALL CLAIMS ===");
-                foreach (var claim in User.Claims)
-                {
-                    Console.WriteLine($"Claim: {claim.Type} = {claim.Value}");
-                }
                 throw new UnauthorizedAccessException("No user ID claim found in token");
             }
 
             if (!int.TryParse(userIdClaim.Value, out int userId))
             {
-                throw new UnauthorizedAccessException($"Invalid user ID format: {userIdClaim.Value}");
+                throw new UnauthorizedAccessException("Invalid user ID format");
             }
 
-            Console.WriteLine($"✅ User ID extracted: {userId}");
             return userId;
         }
 
@@ -72,7 +65,6 @@ public async Task<IActionResult> CheckDuplicate([FromBody] CheckDuplicateDto dto
             try
             {
                 var userId = GetCurrentUserId();
-                Console.WriteLine($"📝 Creating record for user ID: {userId}");
                 
                 var record = await _childRecordService.CreateAsync(dto, userId);
                 return Ok(record);
@@ -83,8 +75,7 @@ public async Task<IActionResult> CheckDuplicate([FromBody] CheckDuplicateDto dto
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error: {ex.Message}");
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(new { message = "An error occurred creating the record" });
             }
         }
 
@@ -157,6 +148,12 @@ public async Task<IActionResult> CheckDuplicate([FromBody] CheckDuplicateDto dto
         {
             try
             {
+                if (ids == null || ids.Count == 0)
+                    return BadRequest(new { message = "No IDs provided" });
+
+                if (ids.Count > 100)
+                    return BadRequest(new { message = "Cannot delete more than 100 records at once" });
+
                 var result = await _childRecordService.DeleteManyAsync(ids);
                 if (!result)
                     return NotFound(new { message = "No records found" });
@@ -164,7 +161,7 @@ public async Task<IActionResult> CheckDuplicate([FromBody] CheckDuplicateDto dto
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(new { message = "An error occurred deleting records" });
             }
         }
     }

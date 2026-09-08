@@ -97,6 +97,44 @@ namespace Nutrition_backend.Controllers
             });
         }
 
+        [HttpPut("admins/{id}")]
+        public async Task<IActionResult> UpdateAdmin(int id, [FromBody] UpdateAdminDto dto)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null || user.Role != "admin")
+            {
+                return NotFound(new { message = "Admin not found" });
+            }
+
+            if (await _context.Users.AnyAsync(u => u.Username == dto.Username && u.Id != id))
+            {
+                return BadRequest(new { message = "Username already exists" });
+            }
+
+            if (await _context.Users.AnyAsync(u => u.Email == dto.Email && u.Id != id))
+            {
+                return BadRequest(new { message = "Email already exists" });
+            }
+
+            user.Username = dto.Username;
+            user.Email = dto.Email;
+
+            if (!string.IsNullOrEmpty(dto.NewPassword))
+            {
+                user.PasswordHash = _passwordService.HashPassword(dto.NewPassword);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                user.Id,
+                user.Username,
+                user.Email,
+                user.IsActive
+            });
+        }
+
         [HttpDelete("admins/{id}")]
         public async Task<IActionResult> DeleteAdmin(int id)
         {
