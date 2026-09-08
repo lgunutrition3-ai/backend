@@ -47,7 +47,8 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+    ?? Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
+    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found. Set it as Railway variable: ConnectionStrings__DefaultConnection");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
